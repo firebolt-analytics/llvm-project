@@ -712,6 +712,8 @@ if(CMAKE_CROSSCOMPILING OR (LLVM_OPTIMIZED_TABLEGEN AND (LLVM_ENABLE_ASSERTIONS 
 endif()
 
 message (STATUS "LLVM USE HOST TOOLS ${LLVM_USE_HOST_TOOLS}")
+message (STATUS "BINARY DIR ${LLVM_BINARY_DIR}")
+message (STATUS "CURRENT SOURCE DIR ${CMAKE_CURRENT_SOURCE_DIR}")
 
 option(LLVM_OMIT_DAGISEL_COMMENTS "Do not add comments to DAG ISel" ON)
 if (CMAKE_BUILD_TYPE AND uppercase_CMAKE_BUILD_TYPE MATCHES "^(RELWITHDEBINFO|DEBUG)$")
@@ -1120,6 +1122,8 @@ add_subdirectory(include/llvm)
 add_subdirectory(lib)
 
 if( LLVM_INCLUDE_UTILS )
+  message (STATUS "LLVM INCLUDE UTILS ${LLVM_INCLUDE_UTILS} TRY ADD SUBDIRECTORY")
+
   add_subdirectory(utils/FileCheck)
   add_subdirectory(utils/PerfectShuffle)
   add_subdirectory(utils/count)
