@@ -626,23 +626,23 @@ endif()
 # components which may not strictly be necessary (tools, examples, and tests).
 #
 # This is primarily to support building smaller or faster project files.
-option(LLVM_INCLUDE_TOOLS "Generate build targets for the LLVM tools." ON)
+option(LLVM_INCLUDE_TOOLS "Generate build targets for the LLVM tools." OFF)
 option(LLVM_BUILD_TOOLS
-  "Build the LLVM tools. If OFF, just generate build targets." ON)
+  "Build the LLVM tools. If OFF, just generate build targets." OFF)
 
-option(LLVM_INCLUDE_UTILS "Generate build targets for the LLVM utils." ON)
+option(LLVM_INCLUDE_UTILS "Generate build targets for the LLVM utils." OFF)
 option(LLVM_BUILD_UTILS
-  "Build LLVM utility binaries. If OFF, just generate build targets." ON)
+  "Build LLVM utility binaries. If OFF, just generate build targets." OFF)
 
-option(LLVM_INCLUDE_RUNTIMES "Generate build targets for the LLVM runtimes." ON)
+option(LLVM_INCLUDE_RUNTIMES "Generate build targets for the LLVM runtimes." OFF)
 option(LLVM_BUILD_RUNTIMES
-  "Build the LLVM runtimes. If OFF, just generate build targets." ON)
+  "Build the LLVM runtimes. If OFF, just generate build targets." OFF)
 
 option(LLVM_BUILD_RUNTIME
-  "Build the LLVM runtime libraries." ON)
+  "Build the LLVM runtime libraries." OFF)
 option(LLVM_BUILD_EXAMPLES
   "Build the LLVM example programs. If OFF, just generate build targets." OFF)
-option(LLVM_INCLUDE_EXAMPLES "Generate build targets for the LLVM examples" ON)
+option(LLVM_INCLUDE_EXAMPLES "Generate build targets for the LLVM examples" OFF)
 
 if(LLVM_BUILD_EXAMPLES)
   add_definitions(-DBUILD_EXAMPLES)
@@ -650,19 +650,19 @@ endif(LLVM_BUILD_EXAMPLES)
 
 option(LLVM_BUILD_TESTS
   "Build LLVM unit tests. If OFF, just generate build targets." OFF)
-option(LLVM_INCLUDE_TESTS "Generate build targets for the LLVM unit tests." ON)
+option(LLVM_INCLUDE_TESTS "Generate build targets for the LLVM unit tests." OFF)
 option(LLVM_INCLUDE_GO_TESTS "Include the Go bindings tests in test build targets." OFF)
 
 option(LLVM_BUILD_BENCHMARKS "Add LLVM benchmark targets to the list of default
 targets. If OFF, benchmarks still could be built using Benchmarks target." OFF)
-option(LLVM_INCLUDE_BENCHMARKS "Generate benchmark targets. If OFF, benchmarks can't be built." ON)
+option(LLVM_INCLUDE_BENCHMARKS "Generate benchmark targets. If OFF, benchmarks can't be built." OFF)
 
 option (LLVM_BUILD_DOCS "Build the llvm documentation." OFF)
-option (LLVM_INCLUDE_DOCS "Generate build targets for llvm documentation." ON)
+option (LLVM_INCLUDE_DOCS "Generate build targets for llvm documentation." OFF)
 option (LLVM_ENABLE_DOXYGEN "Use doxygen to generate llvm API documentation." OFF)
 option (LLVM_ENABLE_SPHINX "Use Sphinx to generate llvm documentation." OFF)
-option (LLVM_ENABLE_OCAMLDOC "Build OCaml bindings documentation." ON)
-option (LLVM_ENABLE_BINDINGS "Build bindings." ON)
+option (LLVM_ENABLE_OCAMLDOC "Build OCaml bindings documentation." OFF)
+option (LLVM_ENABLE_BINDINGS "Build bindings." OFF)
 
 set(LLVM_INSTALL_DOXYGEN_HTML_DIR "${CMAKE_INSTALL_DOCDIR}/llvm/doxygen-html"
     CACHE STRING "Doxygen-generated HTML documentation install directory")
@@ -705,15 +705,10 @@ if (LLVM_LINK_LLVM_DYLIB AND BUILD_SHARED_LIBS)
   message(FATAL_ERROR "Cannot enable BUILD_SHARED_LIBS with LLVM_LINK_LLVM_DYLIB.  We recommend disabling BUILD_SHARED_LIBS.")
 endif()
 
-message (STATUS "CMAKE CROSS COMPILING ${CMAKE_CROSSCOMPILING}")
 option(LLVM_OPTIMIZED_TABLEGEN "Force TableGen to be built with optimization" OFF)
 if(CMAKE_CROSSCOMPILING OR (LLVM_OPTIMIZED_TABLEGEN AND (LLVM_ENABLE_ASSERTIONS OR CMAKE_CONFIGURATION_TYPES)))
   set(LLVM_USE_HOST_TOOLS ON)
 endif()
-
-message (STATUS "LLVM USE HOST TOOLS ${LLVM_USE_HOST_TOOLS}")
-message (STATUS "BINARY DIR ${LLVM_BINARY_DIR}")
-message (STATUS "CURRENT SOURCE DIR ${CMAKE_CURRENT_SOURCE_DIR}")
 
 option(LLVM_OMIT_DAGISEL_COMMENTS "Do not add comments to DAG ISel" ON)
 if (CMAKE_BUILD_TYPE AND uppercase_CMAKE_BUILD_TYPE MATCHES "^(RELWITHDEBINFO|DEBUG)$")
@@ -1121,24 +1116,24 @@ add_subdirectory(include/llvm)
 
 add_subdirectory(lib)
 
-# if( LLVM_INCLUDE_UTILS )
-#   add_subdirectory(utils/FileCheck)
-#   add_subdirectory(utils/PerfectShuffle)
-#   add_subdirectory(utils/count)
-#   add_subdirectory(utils/not)
-#   add_subdirectory(utils/UnicodeData)
-#   add_subdirectory(utils/yaml-bench)
-# else()
-#   if ( LLVM_INCLUDE_TESTS )
-#     message(FATAL_ERROR "Including tests when not building utils will not work.
-#     Either set LLVM_INCLUDE_UTILS to On, or set LLVM_INCLUDE_TESTS to Off.")
-#   endif()
-# endif()
+if( LLVM_INCLUDE_UTILS )
+  add_subdirectory(utils/FileCheck)
+  add_subdirectory(utils/PerfectShuffle)
+  add_subdirectory(utils/count)
+  add_subdirectory(utils/not)
+  add_subdirectory(utils/UnicodeData)
+  add_subdirectory(utils/yaml-bench)
+else()
+  if ( LLVM_INCLUDE_TESTS )
+    message(FATAL_ERROR "Including tests when not building utils will not work.
+    Either set LLVM_INCLUDE_UTILS to On, or set LLVM_INCLUDE_TESTS to Off.")
+  endif()
+endif()
 
 # Use LLVM_ADD_NATIVE_VISUALIZERS_TO_SOLUTION instead of LLVM_INCLUDE_UTILS because it is not really a util
-# if (LLVM_ADD_NATIVE_VISUALIZERS_TO_SOLUTION)
-#   add_subdirectory(utils/LLVMVisualizers)
-# endif()
+if (LLVM_ADD_NATIVE_VISUALIZERS_TO_SOLUTION)
+  add_subdirectory(utils/LLVMVisualizers)
+endif()
 
 foreach( binding ${LLVM_BINDINGS_LIST} )
   if( EXISTS "${LLVM_MAIN_SRC_DIR}/bindings/${binding}/CMakeLists.txt" )
@@ -1148,59 +1143,59 @@ endforeach()
 
 add_subdirectory(projects)
 
-# if( LLVM_INCLUDE_TOOLS )
-#   add_subdirectory(tools)
-# endif()
+if( LLVM_INCLUDE_TOOLS )
+  add_subdirectory(tools)
+endif()
 
-# if( LLVM_INCLUDE_RUNTIMES )
-#   add_subdirectory(runtimes)
-# endif()
+if( LLVM_INCLUDE_RUNTIMES )
+  add_subdirectory(runtimes)
+endif()
 
-# if( LLVM_INCLUDE_EXAMPLES )
-#   add_subdirectory(examples)
-# endif()
+if( LLVM_INCLUDE_EXAMPLES )
+  add_subdirectory(examples)
+endif()
 
-# if( LLVM_INCLUDE_TESTS )
-#   if(EXISTS ${LLVM_MAIN_SRC_DIR}/projects/test-suite AND TARGET clang)
-#     include(LLVMExternalProjectUtils)
-#     llvm_ExternalProject_Add(test-suite ${LLVM_MAIN_SRC_DIR}/projects/test-suite
-#       USE_TOOLCHAIN
-#       EXCLUDE_FROM_ALL
-#       NO_INSTALL
-#       ALWAYS_CLEAN)
-#   endif()
-#   add_subdirectory(utils/lit)
-#   add_subdirectory(test)
-#   add_subdirectory(unittests)
-#   if( LLVM_INCLUDE_UTILS )
-#     add_subdirectory(utils/unittest)
-#   endif()
+if( LLVM_INCLUDE_TESTS )
+  if(EXISTS ${LLVM_MAIN_SRC_DIR}/projects/test-suite AND TARGET clang)
+    include(LLVMExternalProjectUtils)
+    llvm_ExternalProject_Add(test-suite ${LLVM_MAIN_SRC_DIR}/projects/test-suite
+      USE_TOOLCHAIN
+      EXCLUDE_FROM_ALL
+      NO_INSTALL
+      ALWAYS_CLEAN)
+  endif()
+  add_subdirectory(utils/lit)
+  add_subdirectory(test)
+  add_subdirectory(unittests)
+  if( LLVM_INCLUDE_UTILS )
+    add_subdirectory(utils/unittest)
+  endif()
 
-#   if (WIN32)
-#     # This utility is used to prevent crashing tests from calling Dr. Watson on
-#     # Windows.
-#     add_subdirectory(utils/KillTheDoctor)
-#   endif()
+  if (WIN32)
+    # This utility is used to prevent crashing tests from calling Dr. Watson on
+    # Windows.
+    add_subdirectory(utils/KillTheDoctor)
+  endif()
 
-#   umbrella_lit_testsuite_end(check-all)
-#   get_property(LLVM_ALL_LIT_DEPENDS GLOBAL PROPERTY LLVM_ALL_LIT_DEPENDS)
-#   get_property(LLVM_ALL_ADDITIONAL_TEST_DEPENDS
-#       GLOBAL PROPERTY LLVM_ALL_ADDITIONAL_TEST_DEPENDS)
-#   add_custom_target(test-depends
-#       DEPENDS ${LLVM_ALL_LIT_DEPENDS} ${LLVM_ALL_ADDITIONAL_TEST_DEPENDS})
-#   set_target_properties(test-depends PROPERTIES FOLDER "Tests")
-# endif()
+  umbrella_lit_testsuite_end(check-all)
+  get_property(LLVM_ALL_LIT_DEPENDS GLOBAL PROPERTY LLVM_ALL_LIT_DEPENDS)
+  get_property(LLVM_ALL_ADDITIONAL_TEST_DEPENDS
+      GLOBAL PROPERTY LLVM_ALL_ADDITIONAL_TEST_DEPENDS)
+  add_custom_target(test-depends
+      DEPENDS ${LLVM_ALL_LIT_DEPENDS} ${LLVM_ALL_ADDITIONAL_TEST_DEPENDS})
+  set_target_properties(test-depends PROPERTIES FOLDER "Tests")
+endif()
 
-# if (LLVM_INCLUDE_DOCS)
-#   add_subdirectory(docs)
-# endif()
+if (LLVM_INCLUDE_DOCS)
+  add_subdirectory(docs)
+endif()
 
 add_subdirectory(cmake/modules)
 
 # Do this last so that all lit targets have already been created.
-# if (LLVM_INCLUDE_UTILS)
-#   add_subdirectory(utils/llvm-lit)
-# endif()
+if (LLVM_INCLUDE_UTILS)
+  add_subdirectory(utils/llvm-lit)
+endif()
 
 if (NOT LLVM_INSTALL_TOOLCHAIN_ONLY)
   install(DIRECTORY include/llvm include/llvm-c
@@ -1286,23 +1281,23 @@ if (MSVC AND CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_INSTALL_UCRT_LI
   include(InstallRequiredSystemLibraries)
 endif()
 
-# if (LLVM_INCLUDE_BENCHMARKS)
-#   # Override benchmark defaults so that when the library itself is updated these
-#   # modifications are not lost.
-#   set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Disable benchmark testing" FORCE)
-#   set(BENCHMARK_ENABLE_EXCEPTIONS OFF CACHE BOOL "Disable benchmark exceptions" FORCE)
-#   set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "Don't install benchmark" FORCE)
-#   set(BENCHMARK_DOWNLOAD_DEPENDENCIES OFF CACHE BOOL "Don't download dependencies" FORCE)
-#   set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "Disable Google Test in benchmark" FORCE)
-#   set(BENCHMARK_ENABLE_WERROR ${LLVM_ENABLE_WERROR} CACHE BOOL
-#     "Handle -Werror for Google Benchmark based on LLVM_ENABLE_WERROR" FORCE)
-#   # Since LLVM requires C++11 it is safe to assume that std::regex is available.
-#   set(HAVE_STD_REGEX ON CACHE BOOL "OK" FORCE)
-#   add_subdirectory(${LLVM_THIRD_PARTY_DIR}/benchmark
-#     ${CMAKE_CURRENT_BINARY_DIR}/third-party/benchmark)
-#   add_subdirectory(benchmarks)
-# endif()
+if (LLVM_INCLUDE_BENCHMARKS)
+  # Override benchmark defaults so that when the library itself is updated these
+  # modifications are not lost.
+  set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Disable benchmark testing" FORCE)
+  set(BENCHMARK_ENABLE_EXCEPTIONS OFF CACHE BOOL "Disable benchmark exceptions" FORCE)
+  set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "Don't install benchmark" FORCE)
+  set(BENCHMARK_DOWNLOAD_DEPENDENCIES OFF CACHE BOOL "Don't download dependencies" FORCE)
+  set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "Disable Google Test in benchmark" FORCE)
+  set(BENCHMARK_ENABLE_WERROR ${LLVM_ENABLE_WERROR} CACHE BOOL
+    "Handle -Werror for Google Benchmark based on LLVM_ENABLE_WERROR" FORCE)
+  # Since LLVM requires C++11 it is safe to assume that std::regex is available.
+  set(HAVE_STD_REGEX ON CACHE BOOL "OK" FORCE)
+  add_subdirectory(${LLVM_THIRD_PARTY_DIR}/benchmark
+    ${CMAKE_CURRENT_BINARY_DIR}/third-party/benchmark)
+  add_subdirectory(benchmarks)
+endif()
 
-# if (LLVM_INCLUDE_UTILS AND LLVM_INCLUDE_TOOLS)
-#   add_subdirectory(utils/llvm-locstats)
-# endif()
+if (LLVM_INCLUDE_UTILS AND LLVM_INCLUDE_TOOLS)
+  add_subdirectory(utils/llvm-locstats)
+endif()
