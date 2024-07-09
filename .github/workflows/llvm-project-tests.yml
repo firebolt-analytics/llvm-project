@@ -43,7 +43,7 @@ jobs:
     steps:
       - name: Setup Windows
         if: startsWith(matrix.os, 'windows')
-        uses: llvm/actions/setup-windows@main
+        uses: llvm/actions/setup-windows@22e9f909d35b50bd1181709564bfe816eaeaae81  # 
         with:
           arch: amd64
       # On Windows, starting with win19/20220814.1, cmake choose the 32-bit
@@ -51,19 +51,19 @@ jobs:
       # lldb.  Using this setup-python action to make 3.10 the default
       # python fixes this.
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d  # v5.1.0
         with:
           python-version: '3.10'
       - name: Install Ninja
-        uses: llvm/actions/install-ninja@main
+        uses: llvm/actions/install-ninja@22e9f909d35b50bd1181709564bfe816eaeaae81  # 
       # actions/checkout deletes any existing files in the new git directory,
       # so this needs to either run before ccache-action or it has to use
       # clean: false.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # v4.1.7
         with:
           fetch-depth: 250
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@c92f40bee50034e84c763e33b317c77adaa81c92  # v1.2.13
         with:
           # A full build of llvm, clang, lld, and lldb takes about 250MB
           # of ccache space. There's not much reason to have more than this,
@@ -76,7 +76,7 @@ jobs:
           key: sccache-${{ matrix.os }}
           variant: sccache
       - name: Build and Test
-        uses: llvm/actions/build-test-llvm-project@main
+        uses: llvm/actions/build-test-llvm-project@22e9f909d35b50bd1181709564bfe816eaeaae81  # 
         env:
           # Workaround for https://github.com/actions/virtual-environments/issues/5900.
           # This should be a no-op for non-mac OSes

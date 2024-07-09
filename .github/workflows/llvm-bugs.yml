@@ -9,12 +9,12 @@ jobs:
   auto-subscribe:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
           node-version: 14
       - run: npm install mailgun.js form-data
       - name: Send notification
-        uses: actions/github-script@v5
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7.0.1
         env:
           MAILGUN_API_KEY: ${{ secrets.LLVM_BUGS_KEY }}
         with:
